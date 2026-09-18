@@ -1,0 +1,32 @@
+const mongoose = require("mongoose");
+
+module.exports = mongoose.model('Courses', {
+    title: { type: String },
+    courseBy: { type: String },
+    courseCategoryLogo: { type: String },
+    courseByLogo: { type: String },
+    price: { type: String },
+    price1: { type: String, },
+    price2: { type: String, },
+    price3: { type: String, },
+    startDate: { type: String },
+    startTime: { type: String },
+    courseDuration: { type: String },
+    focus: { type: String },
+    mode: { type: String },
+    description: { type: String },
+    description_0: { type: String },
+    description_1: { type: String },
+    description_2: { type: String },
+    bulitPoint1: { type: String },
+    bulitPoint2: { type: String },
+    bulitPoint3: { type: String },
+    bulitPoint4: { type: String },
+    bulitPoint5: { type: String },
+    bulitPoint6: { type: String },
+    bulitPoint7: { type: String },
+    bulitPoint8: { type: String },
+    bulitPoint9: { type: String },
+    bulitPoint10: { type: String },
+    courseImage: { type: String }
+}, 'courses')
