@@ -266,13 +266,27 @@ app.post('/delete-course', userController.deleteCourse);
 app.get('/read-course', userController.showCourse);
 app.get('/read-course/:id', userController.showCourseById);
 
-app.post('/storing-blog', upload.single("blogImage"), async (req, res) => {
-    if (req.file) {
+var blogUpload = upload.fields([
+    { name: 'blogImage', maxCount: 1 },
+    { name: 'headingImage1', maxCount: 1 },
+    { name: 'headingImage2', maxCount: 1 },
+    { name: 'headingImage3', maxCount: 1 },
+    { name: 'headingImage4', maxCount: 1 },
+    { name: 'headingImage5', maxCount: 1 },
+])
+
+app.post('/storing-blog', blogUpload, async (req, res) => {
+    if (req.files && req.files.blogImage) {
         console.log("file uploaded")
         try {
             await BlogModel.create({
                 ...req.body,
-                blogImage: req.file.path,
+                blogImage: req.files.blogImage[0].path,
+                headingImage1: req.files.headingImage1 ? req.files.headingImage1[0].path : undefined,
+                headingImage2: req.files.headingImage2 ? req.files.headingImage2[0].path : undefined,
+                headingImage3: req.files.headingImage3 ? req.files.headingImage3[0].path : undefined,
+                headingImage4: req.files.headingImage4 ? req.files.headingImage4[0].path : undefined,
+                headingImage5: req.files.headingImage5 ? req.files.headingImage5[0].path : undefined,
             })
             res.json({ status: "ok" })
         } catch (error) {
@@ -284,12 +298,17 @@ app.post('/storing-blog', upload.single("blogImage"), async (req, res) => {
         res.status(400).json({ status: "error", message: "A cover image is required" })
     }
 });
-app.put('/update-blog/:id', upload.single("blogImage"), async (req, res) => {
+app.put('/update-blog/:id', blogUpload, async (req, res) => {
     try {
         const updateData = { ...req.body };
-        if (req.file) {
-            updateData.blogImage = req.file.path;
+        if (req.files && req.files.blogImage) {
+            updateData.blogImage = req.files.blogImage[0].path;
         }
+        ['headingImage1', 'headingImage2', 'headingImage3', 'headingImage4', 'headingImage5'].forEach((field) => {
+            if (req.files && req.files[field]) {
+                updateData[field] = req.files[field][0].path;
+            }
+        });
         await BlogModel.findByIdAndUpdate(req.params.id, updateData);
         res.send("Updated successfully");
     } catch (err) {
@@ -310,8 +329,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-
-
-
-
-
